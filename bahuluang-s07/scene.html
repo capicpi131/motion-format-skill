@@ -1,0 +1,71 @@
+<!--@TITLE Carousel Bahuluang · slide 7-->
+<!--@RASIO 4:5-->
+<!--@HEAD-->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600&family=Playfair+Display:ital,wght@1,500&display=swap">
+<style>
+#stage{background:#faf3ea}
+#foto{position:absolute;left:0;top:0;width:1080px;height:1350px}
+#ov{position:absolute;left:0;top:0;width:1080px;height:1350px;overflow:visible}
+.lab{position:absolute;top:104px;padding:22px 34px 24px;border-radius:30px;background:rgba(250,243,234,.95);box-shadow:0 8px 28px rgba(40,24,12,.28);white-space:nowrap;opacity:0}
+#lab1{font:italic 500 62px/1.05 'Playfair Display',serif;color:#4a2f20}
+#lab2{margin-top:10px;font:600 30px/1.1 'Montserrat',sans-serif;letter-spacing:.03em;color:#a9795a}
+.lab span{display:inline-block;will-change:transform,opacity}
+</style>
+<!--@BODY-->
+<img id="foto" src="assets/gambar/slide.png">
+<svg id="ov" viewBox="0 0 1080 1350">
+  <defs>
+    <clipPath id="cpBenang"><rect id="cpR" x="0" y="1200" width="0" height="60"/></clipPath>
+    <clipPath id="cpU"><rect id="cpUr" x="0" y="0" width="0" height="1350"/></clipPath>
+    <filter id="bay" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#061424" flood-opacity=".6"/></filter>
+  </defs>
+  <g clip-path="url(#cpBenang)"><line id="benang" x1="-10" y1="1228" x2="1090" y2="1228" stroke="#a9795a" stroke-width="5" stroke-linecap="round" stroke-dasharray="1 15"/></g>
+  <circle id="kepala" cx="0" cy="1228" r="9" fill="#e8895a"/>
+  <g clip-path="url(#cpU)"><path id="ul" d="" fill="none" stroke="#e8794a" stroke-width="7" stroke-linecap="round"/></g>
+  <g filter="url(#bay)">
+    <path id="panah" d="" fill="none" stroke="#e8794a" stroke-width="6" stroke-linecap="round"/>
+    <path id="mata" d="" fill="none" stroke="#e8794a" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle id="cincin1" cx="0" cy="0" r="10" fill="none" stroke="#e8794a" stroke-width="4"/>
+    <circle id="cincin2" cx="0" cy="0" r="10" fill="none" stroke="#e8794a" stroke-width="3"/>
+    <circle id="titik" cx="0" cy="0" r="9" fill="#e8794a"/>
+  </g>
+</svg>
+<div class="lab" id="pil"><div id="lab1"></div><div id="lab2"></div></div>
+<!--@SCRIPT-->
+const C = {"title": "Stalaktit", "sub": "menggantung di langit-langit gua", "tx": 215, "ty": 168, "dir": "left", "side": "right", "ul": [178, 330, 1113]};
+const PN = $('#panah'), MA = $('#mata'); let PL = 1;
+const sp = (id, txt) => { $(id).innerHTML = txt.split(' ').map(w => `<span>${w}</span>`).join(' '); return [...document.querySelectorAll(id + ' span')]; };
+const W1 = sp('#lab1', C.title), W2 = sp('#lab2', C.sub);
+[['#titik'], ['#cincin1'], ['#cincin2']].forEach(([id]) => { $(id).setAttribute('cx', C.tx); $(id).setAttribute('cy', C.ty); });
+const SCENE = {
+  dur: 6.4,
+  audio: {vo: [], sfx: [], music: null},
+  muat() { return Promise.all([document.fonts.load("italic 500 62px 'Playfair Display'"), document.fonts.load("600 30px Montserrat"), $('#foto').decode()]).then(() => {
+    const pil = $('#pil'), pw = pil.offsetWidth, ph = pil.offsetHeight, L = C.side === 'right' ? 1008 - 24 - pw : 96; pil.style.left = L + 'px';
+    let S, E, d; const cy = 104 + ph / 2;
+    if (C.dir === 'left') { S = [L - 6, cy]; E = [C.tx + 50, C.ty]; d = `M ${S[0]},${S[1]} C ${S[0] - 120},${S[1] + 30} ${E[0] + 140},${E[1] - 10} ${E[0]},${E[1]}`; }
+    else { S = [L + pw + 6, cy]; E = [C.tx, C.ty - 50]; d = `M ${S[0]},${S[1]} C ${S[0] + 200},${S[1] - 40} ${E[0] - 30},${E[1] - 230} ${E[0]},${E[1]}`; }
+    PN.setAttribute('d', d); PL = PN.getTotalLength();
+    PN.style.strokeDasharray = PL;
+    const e = PN.getPointAtLength(PL), s = PN.getPointAtLength(PL - 4), a = Math.atan2(e.y - s.y, e.x - s.x), P = 38, dd = .5;
+    const p1 = [e.x - P * Math.cos(a - dd), e.y - P * Math.sin(a - dd)], p2 = [e.x - P * Math.cos(a + dd), e.y - P * Math.sin(a + dd)];
+    MA.setAttribute('d', `M ${p1[0]},${p1[1]} L ${e.x},${e.y} L ${p2[0]},${p2[1]}`);
+    if (C.ul) { const [x1, x2, y] = C.ul, m = (x2 - x1); $('#ul').setAttribute('d', `M ${x1},${y + 4} C ${x1 + m * .25},${y - 6} ${x1 + m * .6},${y + 8} ${x2},${y}`); }
+  }); },
+  build(tl) {},
+  frame(t) {
+    const out = 1 - sstep(5.6, 6.2, t);
+    const kb = E.io(seg(t, .15, 1.45)), hx = -20 + 1120 * kb;
+    $('#cpR').setAttribute('width', Math.max(0, hx)); $('#kepala').setAttribute('cx', hx);
+    $('#kepala').setAttribute('opacity', (1 - sstep(1.35, 1.6, t)) * out); $('#benang').setAttribute('opacity', .85 * out);
+    const kata = (arr, a, st) => arr.forEach((el, i) => { const k = E.out(seg(t, a + i * st, a + i * st + .55));
+      el.style.opacity = k * out; el.style.transform = `translateY(${(1 - k) * 28}px)`; el.style.filter = `blur(${(1 - k) * 10}px)`; });
+    const kpi = E.out(seg(t, .55, 1.0)); $('#pil').style.opacity = kpi * out; $('#pil').style.transform = `scale(${.9 + .1 * kpi})`; kata(W1, .8, .14); kata(W2, 1.2, .1);
+    const kp = E.io(seg(t, 1.5, 2.6)); PN.style.strokeDashoffset = PL * (1 - kp); PN.setAttribute('opacity', out);
+    const km = E.out(seg(t, 2.55, 2.85)); MA.setAttribute('opacity', km * out);
+    const kt = E.out(seg(t, 2.6, 3.0)); $('#titik').setAttribute('r', 9 * kt); $('#titik').setAttribute('opacity', out);
+    [['#cincin1', 0], ['#cincin2', .7]].forEach(([id, o]) => { const u = ((t - 2.8 - o) / 1.4); const ok = u > 0; const f = ok ? (u % 1) : 0;
+      $(id).setAttribute('r', 12 + 46 * E.out(f)); $(id).setAttribute('opacity', ok ? (1 - f) * .85 * out : 0); });
+    if (C.ul) { $('#cpUr').setAttribute('width', 1080 * E.io(seg(t, 3.3, 4.1))); $('#ul').setAttribute('opacity', out); }
+  }
+};

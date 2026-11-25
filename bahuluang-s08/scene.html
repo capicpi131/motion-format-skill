@@ -1,0 +1,45 @@
+<!--@TITLE Carousel Bahuluang · slide 8 · paket termasuk-->
+<!--@RASIO 4:5-->
+<!--@HEAD-->
+<style>
+#stage{background:#faf3ea}
+#foto{position:absolute;left:0;top:0;width:1080px;height:1350px}
+#ov{position:absolute;left:0;top:0;width:1080px;height:1350px;overflow:visible}
+</style>
+<!--@BODY-->
+<img id="foto" src="assets/gambar/slide.png">
+<svg id="ov" viewBox="0 0 1080 1350">
+  <defs>
+    <clipPath id="cpBenang"><rect id="cpR" x="0" y="1200" width="0" height="60"/></clipPath>
+    <clipPath id="cpU"><rect id="cpUr" x="440" y="1180" width="0" height="40"/></clipPath>
+  </defs>
+  <g clip-path="url(#cpBenang)"><line id="benang" x1="-10" y1="1228" x2="1090" y2="1228" stroke="#a9795a" stroke-width="5" stroke-linecap="round" stroke-dasharray="1 15"/></g>
+  <circle id="kepala" cx="0" cy="1228" r="9" fill="#e8895a"/>
+  <g id="cek"></g>
+  <line id="turun" x1="540" y1="846" x2="540" y2="1046" stroke="#e8794a" stroke-width="5" stroke-linecap="round" stroke-dasharray="1 15"/>
+  <path id="mata" d="M 518,1034 L 540,1062 L 562,1034" fill="none" stroke="#e8794a" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <g clip-path="url(#cpU)"><path id="ul" d="M 468,1206 C 560,1196 700,1212 858,1202" fill="none" stroke="#e8794a" stroke-width="7" stroke-linecap="round"/></g>
+</svg>
+<!--@SCRIPT-->
+/* Slide 8 · paket termasuk. Foto/teks tidak diubah. Tanda centang menggambar per baris, panah titik ke ajakan, garis di bawah nomor WhatsApp. */
+const YS = [495, 585, 675, 765], NS = 'http://www.w3.org/2000/svg';
+const CEK = YS.map(y => { const p = document.createElementNS(NS, 'path'); p.setAttribute('d', `M 118,${y} L 133,${y + 15} L 160,${y - 17}`); p.setAttribute('fill', 'none');
+  p.setAttribute('stroke', '#e8794a'); p.setAttribute('stroke-width', 7); p.setAttribute('stroke-linecap', 'round'); p.setAttribute('stroke-linejoin', 'round'); $('#cek').appendChild(p);
+  const L = p.getTotalLength(); p.style.strokeDasharray = L; p.L = L; return p; });
+const TR = $('#turun');
+const SCENE = {
+  dur: 6.4,
+  audio: {vo: [], sfx: [], music: null},
+  muat() { return $('#foto').decode(); },
+  build(tl) {},
+  frame(t) {
+    const out = 1 - sstep(5.6, 6.2, t);
+    const kb = E.io(seg(t, .15, 1.45)), hx = -20 + 1120 * kb;
+    $('#cpR').setAttribute('width', Math.max(0, hx)); $('#kepala').setAttribute('cx', hx);
+    $('#kepala').setAttribute('opacity', (1 - sstep(1.35, 1.6, t)) * out); $('#benang').setAttribute('opacity', .85 * out);
+    CEK.forEach((p, i) => { const k = E.out(seg(t, 1.0 + i * .5, 1.0 + i * .5 + .45)); p.style.strokeDashoffset = p.L * (1 - k); p.setAttribute('opacity', out); });
+    const kt = E.io(seg(t, 3.2, 4.0)); TR.setAttribute('opacity', out * clamp(kt * 3)); TR.setAttribute('y2', 846 + 200 * kt); TR.setAttribute('y1', 846);
+    $('#mata').setAttribute('opacity', E.out(seg(t, 3.9, 4.2)) * out);
+    $('#cpUr').setAttribute('width', 440 * E.io(seg(t, 4.2, 5.0))); $('#ul').setAttribute('opacity', out);
+  }
+};
