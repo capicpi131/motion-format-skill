@@ -1,0 +1,38 @@
+<!--@TITLE Carousel Bahuluang · slide 1 · cover-->
+<!--@RASIO 4:5-->
+<!--@HEAD-->
+<style>
+#stage{background:#1a2a3c}
+#foto{position:absolute;left:0;top:0;width:1080px;height:1350px}
+#ov{position:absolute;left:0;top:0;width:1080px;height:1350px;overflow:visible}
+</style>
+<!--@BODY-->
+<img id="foto" src="assets/gambar/slide01.png">
+<svg id="ov" viewBox="0 0 1080 1350">
+  <defs>
+    <clipPath id="cpG"><rect id="cpGr" x="80" y="300" width="0" height="50"/></clipPath>
+    <filter id="bay" x="-20%" y="-40%" width="140%" height="180%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#061424" flood-opacity=".55"/></filter>
+  </defs>
+  <g filter="url(#bay)">
+    <g clip-path="url(#cpG)"><path id="garis" d="M 86,326 C 130,316 190,334 244,322 S 280,320 296,324" fill="none" stroke="#e8794a" stroke-width="7" stroke-linecap="round"/></g>
+    <g id="gs"><path d="M 228,1288 L 292,1288 M 272,1270 L 294,1288 L 272,1306" fill="none" stroke="#e8794a" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></g>
+    <circle id="d1" cx="318" cy="1288" r="6" fill="#e8794a"/><circle id="d2" cx="346" cy="1288" r="5" fill="#e8794a"/><circle id="d3" cx="370" cy="1288" r="4" fill="#e8794a"/>
+  </g>
+</svg>
+<!--@SCRIPT-->
+/* Slide 1 · cover. Foto & teks tidak diubah. Tambahan: garis tangan di bawah "1 hari", panah "geser" yang mengayun pelan. */
+const SCENE = {
+  dur: 6.4,
+  audio: {vo: [], sfx: [], music: null},
+  muat() { return $('#foto').decode(); },
+  build(tl) {},
+  frame(t) {
+    const out = 1 - sstep(5.6, 6.2, t);
+    $('#cpGr').setAttribute('width', 240 * E.io(seg(t, .7, 1.5))); $('#garis').setAttribute('opacity', out);
+    // panah geser: mengayun ke kanan tiap 1,4 detik, titik-titik menyusul
+    const T = 1.4, u = t < 2 ? 0 : ((t - 2) % T) / T, k = u < .5 ? E.out(u / .5) : 1 - E.io((u - .5) / .5), a = sstep(1.8, 2.3, t) * out;
+    $('#gs').setAttribute('transform', `translate(${24 * k},0)`); $('#gs').setAttribute('opacity', a);
+    [['#d1', 0], ['#d2', .08], ['#d3', .16]].forEach(([id, d]) => { const kk = u < .5 ? E.out(clamp((u - d) / .5)) : 1 - E.io(clamp((u - .5 - d) / .5));
+      $(id).setAttribute('opacity', a * (.35 + .65 * kk)); $(id).setAttribute('transform', `translate(${14 * kk},0)`); });
+  }
+};
